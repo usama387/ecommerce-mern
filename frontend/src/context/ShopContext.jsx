@@ -15,6 +15,9 @@ const ShopContextProvider = (props) => {
   // state to hold cart items details for all the downward functions
   const [cartItems, setCartItems] = useState({});
 
+  // state to hold user token
+  const [token, setToken] = useState("");
+
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   // for navigation
@@ -92,6 +95,7 @@ const ShopContextProvider = (props) => {
   // state to hold products data fetched from this api
   const [products, setProducts] = useState([]);
 
+  // function to gel all products and save in a state variable to be accessed with context api
   const getProductsData = async () => {
     try {
       const { data } = await axios.get(`${backendUrl}/api/product/list`);
@@ -107,8 +111,16 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  // to invoke function on mount
   useEffect(() => {
     getProductsData();
+  }, []);
+
+  // to get user token from local storage on mount
+  useEffect(() => {
+    if (!token && localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+    }
   }, []);
 
   const currency = "PKR";
@@ -130,6 +142,9 @@ const ShopContextProvider = (props) => {
     getCartAmount,
     navigate,
     backendUrl,
+    setCartItems,
+    token,
+    setToken,
   };
 
   return (
